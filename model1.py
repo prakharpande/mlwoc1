@@ -12,7 +12,7 @@ def gradientdescent(X,Y,alpha,Theta,iterations):
     m = len(Y)
     for iter in range(1,iterations):
         h = (np.dot(X[:,0:3],Theta) - Y)
-        h = np.clip(h,-100000,100000)
+        h = np.clip(h,-10000000,10000000)
         t1 = np.sum(h)
         t2 = np.sum(h*X[:,1])
         t3 = np.sum(h*X[:,2])
@@ -26,8 +26,10 @@ print("This model predicts your weight based upon your height and gender......")
 print("Loading Data.....")
 data = pd.read_csv("data1")
 # print(data)
-X = data.iloc[0:500,0:2].values
-Y = data.iloc[0:500,2].values
+X = data.iloc[0:400,0:2].values
+Y = data.iloc[0:400,2].values
+X_val = data.iloc[400:500,0:2].values
+Y_val = data.iloc[400:500,2].values
 # print(X)
 # print(Y)
 m = len(Y)
@@ -39,6 +41,7 @@ m = len(Y)
 #plt.show()
 print("Now Calculating Cost and Gradient")
 X = np.hstack([np.ones((m,1)),X])
+X_val = np.hstack([np.ones((100,1)),X_val])
 Theta = np.zeros((3,1))
 # parameters for gradient descent
 iterations = 1000
@@ -52,9 +55,13 @@ print(Theta)
 J = costfunc(X,Y,Theta)
 print("The minimum cost is:")
 print(J)
+J_val = costfunc(X_val,Y_val,Theta)
+print("The validation cost is:")
+print(J_val)
 #plotting the output
 #plt.plot(X[:,1],Y,'ro')
-#plt.plot(X)
+# t = [0,200,1]
+#plt.plot(t,Theta[0]+Theta[1]+t*Theta[2],'r--',t,Theta[0]+t*Theta[2],'g--')
 #plt.xlabel('height in cm')
 #plt.ylabel('weight in kg')
 #plt.axis([0,200,0,200])
@@ -62,7 +69,7 @@ print(J)
 #plt.show()
 #Real Test
 test = np.zeros((1,3))
-test = np.array([1,0,152.5])
+test = np.array([1,0,162])
 predictout = test.dot(Theta)
 print("The value of weight(in kgs) for the test input is:")
 print(predictout)
