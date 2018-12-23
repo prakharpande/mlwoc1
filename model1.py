@@ -22,7 +22,7 @@ def gradientdescent(X,Y,alpha,Theta,iterations):
     return Theta
 #model
 print("This program is machine learning model.....")
-print("This model predicts your based upon your height and gender......")
+print("This model predicts your weight based upon your height and gender......")
 print("Loading Data.....")
 data = pd.read_csv("data1")
 # print(data)
