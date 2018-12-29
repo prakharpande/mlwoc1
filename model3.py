@@ -6,6 +6,7 @@ from sklearn import preprocessing
 #sigmoid function
 def sigmoid(z):
     sig =  1./(1 + np.exp(-z))
+    sig = np.clip(sig,1e-6,1)
     return sig
 #costfunction
 def costfunc(X,Y,Theta):
