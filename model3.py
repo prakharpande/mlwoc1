@@ -2,17 +2,26 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import pandas as pd
-import math
+from sklearn import preprocessing
 #sigmoid function
 def sigmoid(z):
-    return 1/(1+math.exp(-z))
+    sig =  1./(1 + np.exp(-z))
+    return sig
 #costfunction
 def costfunc(X,Y,Theta):
     h_theta = np.zeros((len(X),1))
-    k = X@Theta
-    h_theta = sigmoid(k)
-    cost = (1/m)*(-Y.transpose()@math.log(h_theta)-((np.ones(len(Y),1)-Y).transpose()@math.log(np.ones(len(h_Theta),1)-h_theta)))
+    k = X.dot(Theta)
+    h_theta = sigmoid((k))
+    M = len(X)
+    cost = (1/M)*(-np.transpose(Y).dot(np.log10(h_theta))-np.transpose(1-Y).dot(np.log10(1-h_theta)))
     return cost
+#gradient function
+def gradfunc(X,Y,Theta):
+    m = len(Y)
+    k = X.dot(Theta)
+    h_theta = sigmoid((k))
+    grad = (np.dot(X.transpose(),np.subtract((h_theta),Y.reshape(8000,1))))/m
+    return grad
 #Model Begins
 print("This is a machine learning model..........")
 print("this model works on the algorithm of logistic regression..........")
@@ -31,4 +40,6 @@ X_val = np.hstack([np.ones((len(Y_val),1)),X_val])
 Theta = np.random.rand(13,1)
 #calculating cost
 cost = costfunc(X_train,Y_train,Theta)
+grad = gradfunc(X_train,Y_train,Theta)
 print(cost)
+print(grad)
