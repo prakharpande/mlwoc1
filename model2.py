@@ -8,12 +8,14 @@ import math
 def sigmoid(z):
     return 1/(1+math.exp(-z))
 #cost function
-def costfunc(Theta1,Theta2,X_train,Y_train,lambda):
+def costfunc(Theta1,Theta2,X,Y,lamda,output_layer_size):
     n = len(Y_train)
     a1 = np.hstack(np.ones((n,1)),X_train)
     a2 = sigmoid(a1*Theta1.transpose())
     a2 = np.hstack(np.ones((n,1)),a2)
-    a3 = sigmoid(a2*theta2.transpose())
+    a3 = sigmoid(a2*Theta2.transpose())
+    Y = np.tile(np.arange(output_layer_size),(n,1)) == np.tile(Y,(1,output_layer_size))
+    print(Y)
 #model begins
 print("This is a machine learning model.........")
 print("This model identifies the character from a image........")
@@ -38,3 +40,5 @@ output_layer_size = 10
 Theta1 = np.random.rand(50,785)
 Theta2 = np.random.rand(10,51)
 #calculating cost and forward propagation
+lamda = 0
+costfunc(Theta1,Theta2,X_train,Y_train,lamda,output_layer_size)
