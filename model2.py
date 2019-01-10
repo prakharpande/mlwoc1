@@ -23,37 +23,37 @@ def costfunc(Theta1,Theta2,X_train,Y_train,lamda,output_layer_size):
     cost = cost + error
     return cost
 #backpropagation
-def grad(X_train,Y_train,Theta1,Theta2,lamda,alpha):
+def grad(X_train,Y_train,Theta1,Theta2,lamda,alpha,input_layer_size,hidden_layer_size,output_layer_size):
     a1 = np.hstack([np.ones((len(X_train),1)),X_train])
     a2 = sigmoid((np.dot(a1,np.transpose(Theta1))))
     a2 = np.hstack([np.ones((len(X_train),1)),a2])
     a3 = forwardprop(Theta1,Theta2,X_train,Y_train)
     del1 = np.zeros(np.shape(Theta1))
     del2 = np.zeros(np.shape(Theta2))
-    for i in range(0,len(Y_train)-1):
-        d3 = a3[i:i+1,:] - Y_train[i:i+1,:]
-        k = np.dot(Theta1,np.transpose(a1[i,:]))
-        k = np.reshape(k,(50,1))
-        l = np.dot(np.transpose(Theta2[:,1:len(Theta2[1])]),np.transpose(d3))
-        l = np.reshape(l,(50,1))
-        d2 = l*sigmoidgradient(k)
-        del1 = del1 + np.dot(d2,np.reshape(a1[i,:],(1,785)))
-        del2 = del2 + np.dot(np.transpose(d3),np.transpose(np.reshape(a2[i,:],(51,1))))
+    d3 = a3 - Y_train
+    k = np.dot(Theta1,np.transpose(a1))
+    k = np.reshape(k,(hidden_layer_size,len(X_train)))
+    l = np.dot(np.transpose(Theta2[:,1:len(Theta2[1])]),np.transpose(d3))
+    l = np.reshape(l,(hidden_layer_size,len(X_train)))
+    d2 = l*sigmoidgradient(k)
+    del1 = np.dot(d2,a1)
+    del2 = np.dot(np.transpose(d3),a2)
     Theta1_grad = (1/len(Y_train))*del1
     Theta2_grad = (1/len(Y_train))*del2
     return [Theta1_grad,Theta2_grad]
 #gradient descent
-def gradientdescent(X,Y,Theta1,Theta2,alpha,maxiter,lamda):
+def gradientdescent(X,Y,Theta1,Theta2,alpha,maxiter,lamda,input_layer_size,hidden_layer_size,output_layer_size):
     for i in range(0,maxiter):
-        [Theta1,Theta2] = grad(X,Y,Theta1,Theta2,lamda,alpha)
+        [Theta1,Theta2] = grad(X,Y,Theta1,Theta2,lamda,alpha,input_layer_size,hidden_layer_size,output_layer_size)
         Theta1 = Theta1 - alpha*Theta1
         Theta2 = Theta2 - alpha*Theta2
     return [Theta1,Theta2]
 #predict function
 def predict(X_val,Y_val,Theta1,Theta2):
-    output = forwardprop(Theta1,Theta2,X_train,Y_train)
+    output = forwardprop(Theta1,Theta2,X_val,Y_val)
     output_Y = np.argmax(output,axis=1)
-    A = (Y_val==output_Y)
+    original_Y = np.argmax(Y_val,axis=1)
+    A = (original_Y == output_Y)
     acc = np.mean(A)*100
     return acc
 #model begins
@@ -82,7 +82,7 @@ output_layer_size = 10
 Theta1 = np.random.rand(50,785)
 Theta2 = np.random.rand(10,51)
 #calculating cost and forward propagation
-lamda = 1
+lamda = 0
 Y_train = np.tile(np.arange(output_layer_size),(len(Y_train),1)) == np.tile(Y_train,(1,output_layer_size))
 Y_train = Y_train*1
 Y_val = np.tile(np.arange(output_layer_size),(len(Y_val),1)) == np.tile(Y_val,(1,output_layer_size))
@@ -90,10 +90,10 @@ Y_val = Y_val*1
 cost = costfunc(Theta1,Theta2,X_train,Y_train,lamda,output_layer_size)
 print(cost)
 #calculating gradient using backpropagation
-alpha = 0.1
+alpha = 0.01
 #calculating gradient descent
-maxiter = 1000
-[Theta1,Theta2] = gradientdescent(X_train,Y_train,Theta1,Theta2,alpha,maxiter,lamda)
+maxiter = 100
+[Theta1,Theta2] = gradientdescent(X_train,Y_train,Theta1,Theta2,alpha,maxiter,lamda,input_layer_size,hidden_layer_size,output_layer_size)
 print(Theta1)
 print(Theta2)
 #predicting accuracy
