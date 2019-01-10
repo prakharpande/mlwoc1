@@ -68,7 +68,7 @@ print(J_val)
 #plt.show()
 #Real Test
 test = np.zeros((1,3))
-test = np.array([1,1,185])
+test = np.array([1,1,173])
 predictout = test.dot(Theta)
 print("The value of weight(in kgs) for the test input is:")
 print(predictout)
