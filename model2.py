@@ -9,10 +9,10 @@ def sigmoidgradient(z):
     sig = sigmoid(z)*(1-sigmoid(z))
     return sig
 #forwardpropagation
-def forwardprop(Theta1,Theta2,X_train,Y_train):
-    a1 = np.hstack([np.ones((len(X_train),1)),X_train])
+def forwardprop(Theta1,Theta2,X,Y):
+    a1 = np.hstack([np.ones((len(X),1)),X])
     a2 = sigmoid((np.dot(a1,np.transpose(Theta1))))
-    a2 = np.hstack([np.ones((len(X_train),1)),a2])
+    a2 = np.hstack([np.ones((len(X),1)),a2])
     a3 = sigmoid((np.dot(a2,np.transpose(Theta2))))
     return a3
 #cost function
@@ -53,6 +53,10 @@ def predict(X_val,Y_val,Theta1,Theta2):
     output = forwardprop(Theta1,Theta2,X_val,Y_val)
     output_Y = np.argmax(output,axis=1)
     original_Y = np.argmax(Y_val,axis=1)
+    print(np.size(output))
+    print(np.size(Y_val))
+    print(np.shape(output_Y))
+    print(np.shape(original_Y))
     A = (original_Y == output_Y)
     acc = np.mean(A)*100
     return acc
@@ -64,17 +68,16 @@ print("Loading data...........")
 mndata = MNIST("C:/Users/Prakhar Pande/Documents/mlwoc1")
 images, labels = mndata.load_training()
 test_images, test_labels = mndata.load_testing()
-m = len(labels)
 images1 = pd.DataFrame(images)
 labels1 = pd.DataFrame([labels])
 labels1= np.transpose(labels1)
 images2 = pd.DataFrame(test_images)
 labels2 = pd.DataFrame([test_labels])
 labels2= np.transpose(labels2)
-X_train = images1.iloc[0:50000,:].values
-Y_train = labels1.iloc[0:50000,:].values
-X_val = images2.iloc[50000:m,:].values
-Y_val = labels2.iloc[50000:m,:].values
+X_train = images1.iloc[0:60000,:].values
+Y_train = labels1.iloc[0:60000,:].values
+X_val = images2.iloc[0:10000,:].values
+Y_val = labels2.iloc[0:10000,:].values
 #Defining architecture of the network
 input_layer_size = 784
 hidden_layer_size = 50
@@ -90,9 +93,9 @@ Y_val = Y_val*1
 cost = costfunc(Theta1,Theta2,X_train,Y_train,lamda,output_layer_size)
 print(cost)
 #calculating gradient using backpropagation
-alpha = 0.01
+alpha = 0.001
 #calculating gradient descent
-maxiter = 100
+maxiter = 200
 [Theta1,Theta2] = gradientdescent(X_train,Y_train,Theta1,Theta2,alpha,maxiter,lamda,input_layer_size,hidden_layer_size,output_layer_size)
 print(Theta1)
 print(Theta2)
